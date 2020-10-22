@@ -32,6 +32,16 @@ npm install remark-directive
 Say we have the following file, `example.md`:
 
 ```markdown
+:::main{#readme}
+
+Lorem:br
+ipsum.
+
+::hr{.red}
+
+A :i[lovely] language know as :abbr[HTML]{title="HyperText Markup Language"}.
+
+:::
 ```
 
 And our script, `example.js`, looks as follows:
@@ -42,22 +52,55 @@ var report = require('vfile-reporter')
 var unified = require('unified')
 var parse = require('remark-parse')
 var directive = require('remark-directive')
+var remark2rehype = require('remark-rehype')
+var format = require('rehype-format')
 var stringify = require('rehype-stringify')
+var visit = require('unist-util-visit')
+var h = require('hastscript')
 
 unified()
   .use(parse)
   .use(directive)
+  .use(htmlDirectives)
   .use(remark2rehype)
+  .use(format)
   .use(stringify)
   .process(vfile.readSync('example.md'), function (err, file) {
     console.error(report(err || file))
     console.log(String(file))
   })
+
+// This plugin is just an example! You can handle directives however you please!
+function htmlDirectives() {
+  return transform
+
+  function transform(tree) {
+    visit(tree, ['textDirective', 'leafDirective', 'containerDirective'], ondirective)
+  }
+
+  function ondirective(node) {
+    var data = node.data || (node.data = {})
+    var hast = h(node.name, node.attributes)
+
+    data.hName = hast.tagName
+    data.hProperties = hast.properties
+  }
+}
 ```
 
 Now, running `node example` yields:
 
+```txt
+example.md: no issues found
+```
+
 ```html
+example.md: no issues found
+<main id="readme">
+  <p>Lorem<br>ipsum.</p>
+  <hr class="red">
+  <p>A <i>lovely</i> language know as <abbr title="HyperText Markup Language">HTML</abbr>.</p>
+</main>
 ```
 
 ## API
