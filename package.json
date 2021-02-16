@@ -45,7 +45,7 @@
     "tape": "^5.0.0",
     "to-vfile": "^6.0.0",
     "unified": "^9.0.0",
-    "xo": "^0.34.0"
+    "xo": "^0.37.0"
   },
   "scripts": {
     "format": "remark . -qfo --ignore-pattern test/ && prettier . -w --loglevel warn && xo --fix",
@@ -72,9 +72,12 @@
     "prettier": true,
     "esnext": false,
     "rules": {
-      "unicorn/no-fn-reference-in-iterator": "off",
+      "unicorn/no-array-callback-reference": "off",
       "unicorn/prefer-optional-catch-binding": "off"
-    }
+    },
+    "ignores": [
+      "types/"
+    ]
   },
   "remarkConfig": {
     "plugins": [
