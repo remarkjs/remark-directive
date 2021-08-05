@@ -1,3 +1,7 @@
+/**
+ * @typedef {import('mdast').Root} Root
+ */
+
 import fs from 'fs'
 import path from 'path'
 import test from 'tape'
@@ -35,14 +39,16 @@ test('fixtures', (t) => {
       const treePath = path.join(base, fixture, 'tree.json')
       const proc = remark().use(directive).freeze()
       const actual = proc.parse(file)
+      /** @type {string} */
       let output
+      /** @type {Root} */
       let expected
 
       try {
-        expected = JSON.parse(fs.readFileSync(treePath))
+        expected = JSON.parse(String(fs.readFileSync(treePath)))
       } catch {
         // New fixture.
-        fs.writeFileSync(treePath, JSON.stringify(actual, 0, 2) + '\n')
+        fs.writeFileSync(treePath, JSON.stringify(actual, null, 2) + '\n')
         expected = actual
       }
 
