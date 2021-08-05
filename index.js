@@ -1,14 +1,10 @@
-'use strict'
-
-var syntax = require('micromark-extension-directive')
-var fromMarkdown = require('mdast-util-directive/from-markdown')
-var toMarkdown = require('mdast-util-directive/to-markdown')
+import syntax from 'micromark-extension-directive'
+import fromMarkdown from 'mdast-util-directive/from-markdown.js'
+import toMarkdown from 'mdast-util-directive/to-markdown.js'
 
 var warningIssued
 
-module.exports = directive
-
-function directive() {
+export default function remarkDirective() {
   var data = this.data()
 
   // Old remark.

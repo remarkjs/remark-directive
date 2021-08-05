@@ -1,14 +1,12 @@
-'use strict'
-
-var fs = require('fs')
-var path = require('path')
-var test = require('tape')
-var vfile = require('to-vfile')
-var unified = require('unified')
-var remark = require('remark')
-var not = require('not')
-var hidden = require('is-hidden')
-var directive = require('..')
+import fs from 'fs'
+import path from 'path'
+import test from 'tape'
+import vfile from 'to-vfile'
+import unified from 'unified'
+import remark from 'remark'
+import not from 'not'
+import hidden from 'is-hidden'
+import directive from '../index.js'
 
 test('directive()', function (t) {
   t.doesNotThrow(function () {
@@ -23,7 +21,7 @@ test('directive()', function (t) {
 })
 
 test('fixtures', function (t) {
-  var base = path.join(__dirname, 'fixtures')
+  var base = path.join('test', 'fixtures')
   var entries = fs.readdirSync(base).filter(not(hidden))
 
   t.plan(entries.length)
