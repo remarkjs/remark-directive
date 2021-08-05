@@ -7,43 +7,40 @@ import {remark} from 'remark'
 import {isHidden} from 'is-hidden'
 import directive from '../index.js'
 
-test('directive()', function (t) {
-  t.doesNotThrow(function () {
+test('directive()', (t) => {
+  t.doesNotThrow(() => {
     remark().use(directive).freeze()
   }, 'should not throw if not passed options')
 
-  t.doesNotThrow(function () {
+  t.doesNotThrow(() => {
     unified().use(directive).freeze()
   }, 'should not throw if without parser or compiler')
 
   t.end()
 })
 
-test('fixtures', function (t) {
-  var base = path.join('test', 'fixtures')
-  var entries = fs.readdirSync(base).filter((d) => !isHidden(d))
+test('fixtures', (t) => {
+  const base = path.join('test', 'fixtures')
+  const entries = fs.readdirSync(base).filter((d) => !isHidden(d))
 
   t.plan(entries.length)
 
-  entries.forEach(each)
-
-  function each(fixture) {
-    t.test(fixture, function (st) {
-      var file = readSync(path.join(base, fixture, 'input.md'))
-      var input = String(file)
-      var outputPath = path.join(base, fixture, 'output.md')
-      var treePath = path.join(base, fixture, 'tree.json')
-      var proc
-      var actual
-      var output
-      var expected
-
-      proc = remark().use(directive).freeze()
-      actual = proc.parse(file)
+  let index = -1
+  while (++index < entries.length) {
+    const fixture = entries[index]
+    t.test(fixture, (st) => {
+      const file = readSync(path.join(base, fixture, 'input.md'))
+      const input = String(file)
+      const outputPath = path.join(base, fixture, 'output.md')
+      const treePath = path.join(base, fixture, 'tree.json')
+      const proc = remark().use(directive).freeze()
+      const actual = proc.parse(file)
+      let output
+      let expected
 
       try {
         expected = JSON.parse(fs.readFileSync(treePath))
-      } catch (_) {
+      } catch {
         // New fixture.
         fs.writeFileSync(treePath, JSON.stringify(actual, 0, 2) + '\n')
         expected = actual
@@ -51,7 +48,7 @@ test('fixtures', function (t) {
 
       try {
         output = fs.readFileSync(outputPath, 'utf8')
-      } catch (_) {
+      } catch {
         output = input
       }
 

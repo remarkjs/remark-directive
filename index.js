@@ -1,10 +1,10 @@
 import {directive} from 'micromark-extension-directive'
 import {directiveFromMarkdown, directiveToMarkdown} from 'mdast-util-directive'
 
-var warningIssued
+let warningIssued
 
 export default function remarkDirective() {
-  var data = this.data()
+  const data = this.data()
 
   // Old remark.
   /* c8 ignore next 14 */

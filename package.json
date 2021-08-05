@@ -45,7 +45,7 @@
     "tape": "^5.0.0",
     "to-vfile": "^7.0.0",
     "unified": "^10.0.0",
-    "xo": "^0.37.0"
+    "xo": "^0.39.0"
   },
   "scripts": {
     "format": "remark . -qfo --ignore-pattern test/ && prettier . -w --loglevel warn && xo --fix",
@@ -64,13 +64,6 @@
   },
   "xo": {
     "prettier": true,
-    "esnext": false,
-    "rules": {
-      "no-var": "off",
-      "prefer-arrow-callback": "off",
-      "unicorn/no-array-callback-reference": "off",
-      "unicorn/prefer-optional-catch-binding": "off"
-    },
     "ignores": [
       "types/"
     ]
