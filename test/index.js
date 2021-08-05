@@ -1,11 +1,10 @@
 import fs from 'fs'
 import path from 'path'
 import test from 'tape'
-import vfile from 'to-vfile'
-import unified from 'unified'
-import remark from 'remark'
-import not from 'not'
-import hidden from 'is-hidden'
+import {readSync} from 'to-vfile'
+import {unified} from 'unified'
+import {remark} from 'remark'
+import {isHidden} from 'is-hidden'
 import directive from '../index.js'
 
 test('directive()', function (t) {
@@ -22,7 +21,7 @@ test('directive()', function (t) {
 
 test('fixtures', function (t) {
   var base = path.join('test', 'fixtures')
-  var entries = fs.readdirSync(base).filter(not(hidden))
+  var entries = fs.readdirSync(base).filter((d) => !isHidden(d))
 
   t.plan(entries.length)
 
@@ -30,8 +29,8 @@ test('fixtures', function (t) {
 
   function each(fixture) {
     t.test(fixture, function (st) {
-      var file = vfile.readSync(path.join(base, fixture, 'input.md'))
-      var input = String(file.contents)
+      var file = readSync(path.join(base, fixture, 'input.md'))
+      var input = String(file)
       var outputPath = path.join(base, fixture, 'output.md')
       var treePath = path.join(base, fixture, 'tree.json')
       var proc

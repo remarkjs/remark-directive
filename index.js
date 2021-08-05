@@ -1,6 +1,5 @@
-import syntax from 'micromark-extension-directive'
-import fromMarkdown from 'mdast-util-directive/from-markdown.js'
-import toMarkdown from 'mdast-util-directive/to-markdown.js'
+import {directive} from 'micromark-extension-directive'
+import {directiveFromMarkdown, directiveToMarkdown} from 'mdast-util-directive'
 
 var warningIssued
 
@@ -24,9 +23,9 @@ export default function remarkDirective() {
     )
   }
 
-  add('micromarkExtensions', syntax())
-  add('fromMarkdownExtensions', fromMarkdown)
-  add('toMarkdownExtensions', toMarkdown)
+  add('micromarkExtensions', directive())
+  add('fromMarkdownExtensions', directiveFromMarkdown)
+  add('toMarkdownExtensions', directiveToMarkdown)
 
   function add(field, value) {
     // Other extensions.
