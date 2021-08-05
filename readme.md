@@ -21,6 +21,9 @@ Use this plugin for remark 13+.
 
 ## Install
 
+This package is [ESM only](https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c):
+Node 12+ is needed to use it and it must be `import`ed instead of `require`d.
+
 [npm][]:
 
 ```sh
@@ -44,46 +47,51 @@ A :i[lovely] language know as :abbr[HTML]{title="HyperText Markup Language"}.
 :::
 ```
 
-And our script, `example.js`, looks as follows:
+And our module, `example.js`, looks as follows:
 
 ```js
-var vfile = require('to-vfile')
-var report = require('vfile-reporter')
-var unified = require('unified')
-var parse = require('remark-parse')
-var directive = require('remark-directive')
-var remark2rehype = require('remark-rehype')
-var format = require('rehype-format')
-var stringify = require('rehype-stringify')
-var visit = require('unist-util-visit')
-var h = require('hastscript')
+import {readSync} from 'to-vfile'
+import {reporter} from 'vfile-reporter'
+import {unified} from 'unified'
+import remarkParse from 'remark-parse'
+import remarkDirective from 'remark-directive'
+import remarkRehype from 'remark-rehype'
+import rehypeFormat from 'rehype-format'
+import rehypeStringify from 'rehype-stringify'
+import {visit} from 'unist-util-visit'
+import {h} from 'hastscript'
+
+const file = readSync('example.md')
 
 unified()
-  .use(parse)
-  .use(directive)
-  .use(htmlDirectives)
-  .use(remark2rehype)
-  .use(format)
-  .use(stringify)
-  .process(vfile.readSync('example.md'), function (err, file) {
-    console.error(report(err || file))
+  .use(remarkParse)
+  .use(remarkDirective)
+  .use(customPlugin)
+  .use(remarkRehype)
+  .use(rehypeFormat)
+  .use(rehypeStringify)
+  .process(file)
+  .then((file) => {
+    console.error(reporter(file))
     console.log(String(file))
   })
 
 // This plugin is just an example! You can handle directives however you please!
-function htmlDirectives() {
-  return transform
+function customPlugin() {
+  return (tree) => {
+    visit(tree, (node) => {
+      if (
+        node.type === 'textDirective' ||
+        node.type === 'leafDirective' ||
+        node.type === 'containerDirective'
+      ) {
+        const data = node.data || (node.data = {})
+        const hast = h(node.name, node.attributes)
 
-  function transform(tree) {
-    visit(tree, ['textDirective', 'leafDirective', 'containerDirective'], ondirective)
-  }
-
-  function ondirective(node) {
-    var data = node.data || (node.data = {})
-    var hast = h(node.name, node.attributes)
-
-    data.hName = hast.tagName
-    data.hProperties = hast.properties
+        data.hName = hast.tagName
+        data.hProperties = hast.properties
+      }
+    })
   }
 }
 ```
@@ -105,7 +113,10 @@ example.md: no issues found
 
 ## API
 
-### `remark().use(directive)`
+This package exports no identifiers.
+The default export is `remarkDirective`.
+
+### `unified().use(remarkDirective)`
 
 Configures remark so that it can parse and serialize directives.
 Doesn’t handle the directives: [create your own plugin][create-plugin] to do
