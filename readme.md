@@ -136,8 +136,6 @@ scripting (XSS)][xss] attacks.
     — GFM
 *   [`remark-github`](https://github.com/remarkjs/remark-github)
     — Autolink references like in GitHub issues, PRs, and comments
-*   [`remark-footnotes`](https://github.com/remarkjs/remark-footnotes)
-    — Footnotes
 *   [`remark-frontmatter`](https://github.com/remarkjs/remark-frontmatter)
     — Frontmatter (YAML, TOML, and more)
 *   [`remark-math`](https://github.com/remarkjs/remark-math)
