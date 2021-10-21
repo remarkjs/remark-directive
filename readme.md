@@ -12,6 +12,19 @@
 (`:cite[smith04]`, `::youtube[Video of a cat in a box]{v=01ab2cd3efg}`, and
 such).
 
+## Contents
+
+*   [What is this?](#what-is-this)
+*   [When should I use this?](#when-should-i-use-this)
+*   [Install](#install)
+*   [Use](#use)
+*   [API](#api)
+    *   [`unified().use(remarkDirective)`](#unifieduseremarkdirective)
+*   [Security](#security)
+*   [Related](#related)
+*   [Contribute](#contribute)
+*   [License](#license)
+
 ## What is this?
 
 This is a plugin that works with [unified][] (specifically, [remark][], for
