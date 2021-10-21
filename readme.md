@@ -12,13 +12,6 @@
 (`:cite[smith04]`, `::youtube[Video of a cat in a box]{v=01ab2cd3efg}`, and
 such).
 
-## Important!
-
-This plugin is made for the new parser in remark
-([`micromark`](https://github.com/micromark/micromark),
-see [`remarkjs/remark#536`](https://github.com/remarkjs/remark/pull/536)).
-Use this plugin for remark 13+.
-
 ## Install
 
 This package is [ESM only](https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c):
