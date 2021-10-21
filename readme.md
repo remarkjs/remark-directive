@@ -20,6 +20,7 @@ such).
 *   [Use](#use)
 *   [API](#api)
     *   [`unified().use(remarkDirective)`](#unifieduseremarkdirective)
+*   [Examples](#examples)
 *   [Security](#security)
 *   [Related](#related)
 *   [Contribute](#contribute)
@@ -153,6 +154,10 @@ Doesn’t handle the directives: [create your own plugin][create-plugin] to do
 that.
 See the [micromark extension for the syntax][syntax] and the
 [mdast utility for the syntax tree][syntax-tree].
+
+## Examples
+
+To do: The idea is to show different ways of using `remarkDirective` here!
 
 ## Security
 
