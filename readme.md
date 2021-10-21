@@ -12,6 +12,14 @@
 (`:cite[smith04]`, `::youtube[Video of a cat in a box]{v=01ab2cd3efg}`, and
 such).
 
+## What is this?
+
+This is a plugin that works with [unified][] (specifically, [remark][], for
+markdown).
+It adds support for a syntax that allows arbitrary extensions in markdown.
+You use it with some code specific to match your needs, to allow for anything
+from callouts, specifically styled blocks, forms, spoilers, anything!
+
 ## Install
 
 This package is [ESM only](https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c):
@@ -189,6 +197,8 @@ abide by its terms.
 [license]: license
 
 [author]: https://wooorm.com
+
+[unified]: https://github.com/unifiedjs/unified
 
 [remark]: https://github.com/remarkjs/remark
 
