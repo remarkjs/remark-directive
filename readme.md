@@ -16,9 +16,25 @@ such).
 
 This is a plugin that works with [unified][] (specifically, [remark][], for
 markdown).
+That means it’s easier to use than lower-level tools such as micromark or mdast,
+which are abstracted away.
+
 It adds support for a syntax that allows arbitrary extensions in markdown.
 You use it with some code specific to match your needs, to allow for anything
-from callouts, specifically styled blocks, forms, spoilers, anything!
+from callouts, specifically styled blocks, forms, embeds, spoilers, anything!
+
+## When should I use this?
+
+This is one of the four ways to extend markdown: an arbitrary extension syntax.
+(See [Extending markdown](https://github.com/micromark/micromark#extending-markdown)
+in micromark’s docs for the more details and the alternatives).
+This mechanism works well when you control who authors the markdown and it is
+rendered in a place and by tooling you control.
+Example use cases are building a docs website with some custom needs for your
+project or company, or in blogging tools and static site generators.
+It generally works well when authors are not expected to know the ins and outs
+of HTML or JavaScript, but can be trusted to read a guide on how to embed a
+tweet.
 
 ## Install
 
