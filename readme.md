@@ -21,6 +21,8 @@ such).
 *   [API](#api)
     *   [`unified().use(remarkDirective)`](#unifieduseremarkdirective)
 *   [Examples](#examples)
+    *   [Example: YouTube](#example-youtube)
+    *   [Example: Styled blocks](#example-styled-blocks)
 *   [Security](#security)
 *   [Related](#related)
 *   [Contribute](#contribute)
@@ -35,8 +37,7 @@ which are abstracted away.
 
 It adds support for a syntax that allows arbitrary extensions in markdown.
 You can use this with some more code to match your specific needs, to allow for
-anything from callouts, specifically styled blocks, forms, embeds, spoilers,
-etc!
+anything from callouts, citations, styled blocks, forms, embeds, spoilers, etc!
 
 ## When should I use this?
 
@@ -81,8 +82,7 @@ A :i[lovely] language know as :abbr[HTML]{title="HyperText Markup Language"}.
 And our module, `example.js`, looks as follows:
 
 ```js
-import {readSync} from 'to-vfile'
-import {reporter} from 'vfile-reporter'
+import {read} from 'to-vfile'
 import {unified} from 'unified'
 import remarkParse from 'remark-parse'
 import remarkDirective from 'remark-directive'
@@ -92,22 +92,25 @@ import rehypeStringify from 'rehype-stringify'
 import {visit} from 'unist-util-visit'
 import {h} from 'hastscript'
 
-const file = readSync('example.md')
+main()
 
-unified()
-  .use(remarkParse)
-  .use(remarkDirective)
-  .use(customPlugin)
-  .use(remarkRehype)
-  .use(rehypeFormat)
-  .use(rehypeStringify)
-  .process(file)
-  .then((file) => {
-    console.error(reporter(file))
-    console.log(String(file))
-  })
+async function main() {
+  const file = await unified()
+    .use(remarkParse)
+    .use(remarkDirective)
+    .use(customPlugin)
+    .use(remarkRehype)
+    .use(rehypeFormat)
+    .use(rehypeStringify)
+    .process(await read('example.md'))
 
-// This plugin is just an example! You can handle directives however you please!
+  console.log(String(file))
+}
+
+// This plugin is an example to let users write HTML with directives.
+// It’s informative but rather useless.
+// See below for others examples.
+/** @type {import('unified').Plugin<[], import('mdast').Root>} */
 function customPlugin() {
   return (tree) => {
     visit(tree, (node) => {
@@ -129,12 +132,7 @@ function customPlugin() {
 
 Now, running `node example` yields:
 
-```txt
-example.md: no issues found
-```
-
 ```html
-example.md: no issues found
 <main id="readme">
   <p>Lorem<br>ipsum.</p>
   <hr class="red">
@@ -157,7 +155,118 @@ See the [micromark extension for the syntax][syntax] and the
 
 ## Examples
 
-To do: The idea is to show different ways of using `remarkDirective` here!
+### Example: YouTube
+
+This example shows how directives can be used for YouTube embeds.
+It’s based on the example in Use above.
+
+If `example.md` is:
+
+```md
+# Cat videos
+
+::youtube[Video of a cat in a box]{#01ab2cd3efg}
+```
+
+Then, replacing `customPlugin` with this function:
+
+```js
+// This plugin is an example to turn `::youtube` into iframes.
+/** @type {import('unified').Plugin<[], import('mdast').Root>} */
+function customPlugin() {
+  return (tree, file) => {
+    visit(tree, (node) => {
+      if (
+        node.type === 'textDirective' ||
+        node.type === 'leafDirective' ||
+        node.type === 'containerDirective'
+      ) {
+        if (node.name !== 'youtube') return
+
+        const data = node.data || (node.data = {})
+        const attributes = node.attributes || {}
+        const id = attributes.id
+
+        if (node.type === 'textDirective') file.fail('Text directives for `youtube` not supported', node)
+        if (!id) file.fail('Missing video id', node)
+
+        data.hName = 'iframe'
+        data.hProperties = {
+          src: 'https://www.youtube.com/embed/' + id + '?feature=oembed',
+          width: 200,
+          height: 200,
+          frameBorder: 0,
+          allow: 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture',
+          allowFullScreen: true
+        }
+      }
+    })
+  }
+}
+```
+
+Now, running `node example` yields:
+
+```html
+<h1>Cat videos</h1>
+<iframe src="https://www.youtube.com/embed/01ab2cd3efg?feature=oembed" width="200" height="200" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>Video of a cat in a box</iframe>
+```
+
+### Example: Styled blocks
+
+Note: This is sometimes called admonitions, callouts, etc.
+
+This example shows how directives can be used to style blocks.
+It’s based on the example in Use above.
+
+If `example.md` is:
+
+```md
+# How to use xxx
+
+You can use xxx.
+
+:::note{.warning}
+if you chose xxx, you should also use yyy somewhere…
+:::
+```
+
+Then, replacing `customPlugin` with this function:
+
+```js
+// This plugin is an example to turn `::note` into divs, passing arbitrary
+// attributes.
+/** @type {import('unified').Plugin<[], import('mdast').Root>} */
+function customPlugin() {
+  return (tree) => {
+    visit(tree, (node) => {
+      if (
+        node.type === 'textDirective' ||
+        node.type === 'leafDirective' ||
+        node.type === 'containerDirective'
+      ) {
+        if (node.name !== 'note') return
+
+        const data = node.data || (node.data = {})
+        const tagName = node.type === 'textDirective' ? 'span' : 'div'
+
+        data.hName = tagName
+        data.hProperties = h(tagName, node.attributes).properties
+      }
+    })
+  }
+}
+```
+
+Now, running `node example` yields:
+
+```html
+<h1>How to use xxx</h1>
+<p>You can use xxx.</p>
+<div class="warning">
+  <p>if you chose xxx, you should also use yyy somewhere…</p>
+</div>
+```
 
 ## Security
 
