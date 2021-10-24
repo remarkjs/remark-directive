@@ -28,27 +28,27 @@ such).
 
 ## What is this?
 
-This is a plugin that works with [unified][] (specifically, [remark][], for
+This is a plugin that works with [unified][] (specifically [remark][] for
 markdown).
 That means it’s easier to use than lower-level tools such as micromark or mdast,
 which are abstracted away.
 
 It adds support for a syntax that allows arbitrary extensions in markdown.
-You use it with some code specific to match your needs, to allow for anything
-from callouts, specifically styled blocks, forms, embeds, spoilers, anything!
+You can use this with some more code to match your specific needs, to allow for
+anything from callouts, specifically styled blocks, forms, embeds, spoilers,
+etc!
 
 ## When should I use this?
 
-This is one of the four ways to extend markdown: an arbitrary extension syntax.
-(See [Extending markdown](https://github.com/micromark/micromark#extending-markdown)
-in micromark’s docs for the more details and the alternatives).
-This mechanism works well when you control who authors the markdown and it is
-rendered in a place and by tooling you control.
-Example use cases are building a docs website with some custom needs for your
-project or company, or in blogging tools and static site generators.
-It generally works well when authors are not expected to know the ins and outs
-of HTML or JavaScript, but can be trusted to read a guide on how to embed a
-tweet.
+This is one of the four ways to extend markdown: an arbitrary extension syntax
+(see [Extending markdown](https://github.com/micromark/micromark#extending-markdown)
+in micromark’s docs for the alternatives and more info).
+This mechanism works well when you control the content: who authors it, what
+tools handle it, and where it’s displayed.
+When authors can read a guide on how to embed a tweet but are not expected to
+know the ins and outs of HTML or JavaScript.
+Example use cases are a docs website for a project or product, or blogging tools
+and static site generators.
 
 ## Install
 
