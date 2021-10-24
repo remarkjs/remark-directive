@@ -291,13 +291,14 @@ scripting (XSS)][xss] attacks.
 ## Related
 
 *   [`remark-gfm`](https://github.com/remarkjs/remark-gfm)
-    — GFM
+    — support GFM (autolink literals, strikethrough, tables, tasklists)
 *   [`remark-github`](https://github.com/remarkjs/remark-github)
-    — Autolink references like in GitHub issues, PRs, and comments
+    — link references to commits, issues, pull-requests, and users, like on
+    GitHub
 *   [`remark-frontmatter`](https://github.com/remarkjs/remark-frontmatter)
-    — Frontmatter (YAML, TOML, and more)
+    — support frontmatter (YAML, TOML, and more)
 *   [`remark-math`](https://github.com/remarkjs/remark-math)
-    — Math
+    — support math
 
 ## Contribute
 
