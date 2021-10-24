@@ -38,14 +38,14 @@ one syntax for arbitrary extensions in markdown.
 You can use this with some more code to match your specific needs, to allow for
 anything from callouts, citations, styled blocks, forms, embeds, spoilers, etc.
 
-## When should I use this?
-
 unified is an AST (abstract syntax tree) based transform project.
 **remark** is everything unified that relates to markdown.
 The layer under remark is called mdast, which is only concerned with syntax
 trees.
 Another layer underneath is micromark, which is only concerned with parsing.
 This package is a small wrapper to integrate all of these.
+
+## When should I use this?
 
 Directives are one of the four ways to extend markdown: an arbitrary extension
 syntax (see [Extending markdown](https://github.com/micromark/micromark#extending-markdown)
@@ -177,16 +177,7 @@ that.
 
 This example shows how directives can be used for YouTube embeds.
 It’s based on the example in Use above.
-
-If `example.md` is:
-
-```md
-# Cat videos
-
-::youtube[Video of a cat in a box]{#01ab2cd3efg}
-```
-
-Then, replacing `myRemarkPlugin` with this function:
+If `myRemarkPlugin` was replaced with this function:
 
 ```js
 // This plugin is an example to turn `::youtube` into iframes.
@@ -210,11 +201,11 @@ function myRemarkPlugin() {
 
         data.hName = 'iframe'
         data.hProperties = {
-          src: 'https://www.youtube.com/embed/' + id + '?feature=oembed',
+          src: 'https://www.youtube.com/embed/' + id,
           width: 200,
           height: 200,
           frameBorder: 0,
-          allow: 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture',
+          allow: 'picture-in-picture',
           allowFullScreen: true
         }
       }
@@ -223,11 +214,19 @@ function myRemarkPlugin() {
 }
 ```
 
-Now, running `node example` yields:
+…and `example.md` contains:
+
+```markdown
+# Cat videos
+
+::youtube[Video of a cat in a box]{#01ab2cd3efg}
+```
+
+…then running `node example` yields:
 
 ```html
 <h1>Cat videos</h1>
-<iframe src="https://www.youtube.com/embed/01ab2cd3efg?feature=oembed" width="200" height="200" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>Video of a cat in a box</iframe>
+<iframe src="https://www.youtube.com/embed/01ab2cd3efg" width="200" height="200" frameborder="0" allow="picture-in-picture" allowfullscreen>Video of a cat in a box</iframe>
 ```
 
 ### Example: Styled blocks
@@ -236,20 +235,7 @@ Note: This is sometimes called admonitions, callouts, etc.
 
 This example shows how directives can be used to style blocks.
 It’s based on the example in Use above.
-
-If `example.md` is:
-
-```md
-# How to use xxx
-
-You can use xxx.
-
-:::note{.warning}
-if you chose xxx, you should also use yyy somewhere…
-:::
-```
-
-Then, replacing `myRemarkPlugin` with this function:
+If `myRemarkPlugin` was replaced with this function:
 
 ```js
 // This plugin is an example to turn `::note` into divs, passing arbitrary
@@ -276,7 +262,19 @@ function myRemarkPlugin() {
 }
 ```
 
-Now, running `node example` yields:
+…and `example.md` contains:
+
+```markdown
+# How to use xxx
+
+You can use xxx.
+
+:::note{.warning}
+if you chose xxx, you should also use yyy somewhere…
+:::
+```
+
+…then running `node example` yields:
 
 ```html
 <h1>How to use xxx</h1>
@@ -295,7 +293,7 @@ See its readme for parse details:
 
 ## Syntax tree
 
-This plugin applies a mdast utility to build and serialize the AST.
+This plugin applies one mdast utility to build and serialize the AST.
 See its readme for the node types supported in the tree:
 
 *   [`mdast-util-directive`](https://github.com/syntax-tree/mdast-util-directive#syntax-tree)
@@ -303,7 +301,6 @@ See its readme for the node types supported in the tree:
 ## Types
 
 This package is fully typed with [TypeScript][].
-
 If you’re working with the syntax tree, make sure to import this plugin
 somewhere in your types, as that registers the new node types in the tree.
 
