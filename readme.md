@@ -25,6 +25,7 @@ such).
     *   [Example: Styled blocks](#example-styled-blocks)
 *   [Syntax](#syntax)
 *   [Syntax tree](#syntax-tree)
+*   [Types](#types)
 *   [Security](#security)
 *   [Related](#related)
 *   [Contribute](#contribute)
@@ -117,7 +118,7 @@ async function main() {
   const file = await unified()
     .use(remarkParse)
     .use(remarkDirective)
-    .use(customPlugin)
+    .use(myRemarkPlugin)
     .use(remarkRehype)
     .use(rehypeFormat)
     .use(rehypeStringify)
@@ -130,7 +131,7 @@ async function main() {
 // It’s informative but rather useless.
 // See below for others examples.
 /** @type {import('unified').Plugin<[], import('mdast').Root>} */
-function customPlugin() {
+function myRemarkPlugin() {
   return (tree) => {
     visit(tree, (node) => {
       if (
@@ -169,8 +170,6 @@ The default export is `remarkDirective`.
 Configures remark so that it can parse and serialize directives.
 Doesn’t handle the directives: [create your own plugin][create-plugin] to do
 that.
-See the [micromark extension for the syntax][syntax] and the
-[mdast utility for the syntax tree][syntax-tree].
 
 ## Examples
 
@@ -187,12 +186,12 @@ If `example.md` is:
 ::youtube[Video of a cat in a box]{#01ab2cd3efg}
 ```
 
-Then, replacing `customPlugin` with this function:
+Then, replacing `myRemarkPlugin` with this function:
 
 ```js
 // This plugin is an example to turn `::youtube` into iframes.
 /** @type {import('unified').Plugin<[], import('mdast').Root>} */
-function customPlugin() {
+function myRemarkPlugin() {
   return (tree, file) => {
     visit(tree, (node) => {
       if (
@@ -250,13 +249,13 @@ if you chose xxx, you should also use yyy somewhere…
 :::
 ```
 
-Then, replacing `customPlugin` with this function:
+Then, replacing `myRemarkPlugin` with this function:
 
 ```js
 // This plugin is an example to turn `::note` into divs, passing arbitrary
 // attributes.
 /** @type {import('unified').Plugin<[], import('mdast').Root>} */
-function customPlugin() {
+function myRemarkPlugin() {
   return (tree) => {
     visit(tree, (node) => {
       if (
@@ -300,6 +299,28 @@ This plugin applies a mdast utility to build and serialize the AST.
 See its readme for the node types supported in the tree:
 
 *   [`mdast-util-directive`](https://github.com/syntax-tree/mdast-util-directive#syntax-tree)
+
+## Types
+
+This package is fully typed with [TypeScript][].
+
+If you’re working with the syntax tree, make sure to import this plugin
+somewhere in your types, as that registers the new node types in the tree.
+
+```js
+/** @typedef {import('remark-directive')} */
+
+import {visit} from 'unist-util-visit'
+
+/** @type {import('unified').Plugin<[], import('mdast').Root>} */
+export default function myRemarkPlugin() => {
+  return (tree) => {
+    visit(tree, (node) => {
+      // `node` can now be one of the nodes for directives.
+    })
+  }
+}
+```
 
 ## Security
 
@@ -383,6 +404,8 @@ abide by its terms.
 
 [xss]: https://en.wikipedia.org/wiki/Cross-site_scripting
 
+[typescript]: https://www.typescriptlang.org
+
 [rehype]: https://github.com/rehypejs/rehype
 
 [hast]: https://github.com/syntax-tree/hast
@@ -390,7 +413,3 @@ abide by its terms.
 [prop]: https://talk.commonmark.org/t/generic-directives-plugins-syntax/444
 
 [create-plugin]: https://unifiedjs.com/learn/guide/create-a-plugin/
-
-[syntax]: https://github.com/micromark/micromark-extension-directive#syntax
-
-[syntax-tree]: https://github.com/syntax-tree/mdast-util-directive#syntax-tree
