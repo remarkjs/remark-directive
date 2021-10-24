@@ -48,6 +48,8 @@ This mechanism works well when you control the content: who authors it, what
 tools handle it, and where it’s displayed.
 When authors can read a guide on how to embed a tweet but are not expected to
 know the ins and outs of HTML or JavaScript.
+Directives don’t work well if you don’t know who authors content, what tools
+handle it, and where it ends up.
 Example use cases are a docs website for a project or product, or blogging tools
 and static site generators.
 
