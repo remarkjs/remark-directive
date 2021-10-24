@@ -30,19 +30,22 @@ such).
 
 ## What is this?
 
-This is a plugin that works with [unified][] (specifically [remark][] for
-markdown).
-That means it’s easier to use than lower-level tools such as micromark or mdast,
-which are abstracted away.
-
-It adds support for a syntax that allows arbitrary extensions in markdown.
+This package is a [unified][] ([remark][]) plugin to add support for directives:
+one syntax for arbitrary extensions in markdown.
 You can use this with some more code to match your specific needs, to allow for
-anything from callouts, citations, styled blocks, forms, embeds, spoilers, etc!
+anything from callouts, citations, styled blocks, forms, embeds, spoilers, etc.
 
 ## When should I use this?
 
-This is one of the four ways to extend markdown: an arbitrary extension syntax
-(see [Extending markdown](https://github.com/micromark/micromark#extending-markdown)
+unified is an AST (abstract syntax tree) based transform project.
+**remark** is everything unified that relates to markdown.
+The layer under remark is called mdast, which is only concerned with syntax
+trees.
+Another layer underneath is micromark, which is only concerned with parsing.
+This package is a small wrapper to integrate all of these.
+
+Directives are one of the four ways to extend markdown: an arbitrary extension
+syntax (see [Extending markdown](https://github.com/micromark/micromark#extending-markdown)
 in micromark’s docs for the alternatives and more info).
 This mechanism works well when you control the content: who authors it, what
 tools handle it, and where it’s displayed.
