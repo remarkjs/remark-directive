@@ -53,13 +53,25 @@ and static site generators.
 
 ## Install
 
-This package is [ESM only](https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c):
-Node 12+ is needed to use it and it must be `import`ed instead of `require`d.
-
-[npm][]:
+This package is [ESM only](https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c).
+In Node.js (12.20+, 14.14+, 16.0+), install with [npm][]:
 
 ```sh
 npm install remark-directive
+```
+
+In Deno with [Skypack][]:
+
+```js
+import remarkDirective from 'https://cdn.skypack.dev/remark-directive@2?dts'
+```
+
+In browsers with [Skypack][]:
+
+```html
+<script type="module">
+  import remarkDirective from 'https://cdn.skypack.dev/remark-directive@2?min'
+</script>
 ```
 
 ## Use
@@ -328,6 +340,8 @@ abide by its terms.
 [chat]: https://github.com/remarkjs/remark/discussions
 
 [npm]: https://docs.npmjs.com/cli/install
+
+[skypack]: https://www.skypack.dev
 
 [health]: https://github.com/remarkjs/.github
 
