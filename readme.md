@@ -23,6 +23,8 @@ such).
 *   [Examples](#examples)
     *   [Example: YouTube](#example-youtube)
     *   [Example: Styled blocks](#example-styled-blocks)
+*   [Syntax](#syntax)
+*   [Syntax tree](#syntax-tree)
 *   [Security](#security)
 *   [Related](#related)
 *   [Contribute](#contribute)
@@ -284,6 +286,20 @@ Now, running `node example` yields:
   <p>if you chose xxx, you should also use yyy somewhere…</p>
 </div>
 ```
+
+## Syntax
+
+This plugin applies a micromark extensions to parse the syntax.
+See its readme for parse details:
+
+*   [`micromark-extension-directive`](https://github.com/micromark/micromark-extension-directive#syntax)
+
+## Syntax tree
+
+This plugin applies a mdast utility to build and serialize the AST.
+See its readme for the node types supported in the tree:
+
+*   [`mdast-util-directive`](https://github.com/syntax-tree/mdast-util-directive#syntax-tree)
 
 ## Security
 
