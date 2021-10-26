@@ -338,7 +338,8 @@ scripting (XSS)][xss] attacks.
 ## Related
 
 *   [`remark-gfm`](https://github.com/remarkjs/remark-gfm)
-    — support GFM (autolink literals, strikethrough, tables, tasklists)
+    — support GFM (autolink literals, footnotes, strikethrough, tables,
+    tasklists)
 *   [`remark-github`](https://github.com/remarkjs/remark-github)
     — link references to commits, issues, pull-requests, and users, like on
     GitHub
