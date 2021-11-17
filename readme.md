@@ -341,13 +341,12 @@ scripting (XSS)][xss] attacks.
 *   [`remark-gfm`](https://github.com/remarkjs/remark-gfm)
     — support GFM (autolink literals, footnotes, strikethrough, tables,
     tasklists)
-*   [`remark-github`](https://github.com/remarkjs/remark-github)
-    — link references to commits, issues, pull-requests, and users, like on
-    GitHub
 *   [`remark-frontmatter`](https://github.com/remarkjs/remark-frontmatter)
     — support frontmatter (YAML, TOML, and more)
 *   [`remark-math`](https://github.com/remarkjs/remark-math)
     — support math
+*   [`remark-mdx`](https://github.com/mdx-js/mdx/tree/main/packages/mdx)
+    — support MDX (JSX, expressions, ESM)
 
 ## Contribute
 
