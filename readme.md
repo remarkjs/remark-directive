@@ -70,17 +70,17 @@ In Node.js (version 12.20+, 14.14+, or 16.0+), install with [npm][]:
 npm install remark-directive
 ```
 
-In Deno with [Skypack][]:
+In Deno with [`esm.sh`][esmsh]:
 
 ```js
-import remarkDirective from 'https://cdn.skypack.dev/remark-directive@2?dts'
+import remarkDirective from 'https://esm.sh/remark-directive@2'
 ```
 
-In browsers with [Skypack][]:
+In browsers with [`esm.sh`][esmsh]:
 
 ```html
 <script type="module">
-  import remarkDirective from 'https://cdn.skypack.dev/remark-directive@2?min'
+  import remarkDirective from 'https://esm.sh/remark-directive@2?bundle'
 </script>
 ```
 
@@ -392,7 +392,7 @@ abide by its terms.
 
 [npm]: https://docs.npmjs.com/cli/install
 
-[skypack]: https://www.skypack.dev
+[esmsh]: https://esm.sh
 
 [health]: https://github.com/remarkjs/.github
 
