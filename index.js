@@ -11,6 +11,7 @@ import {directiveFromMarkdown, directiveToMarkdown} from 'mdast-util-directive'
  * Plugin to support the generic directives proposal (`:cite[smith04]`,
  * `::youtube[Video of a cat in a box]{v=01ab2cd3efg}`, and such).
  *
+ * @this {import('unified').Processor}
  * @type {import('unified').Plugin<void[], Root>}
  */
 export default function remarkDirective() {
