@@ -1,37 +1,38 @@
 /**
  * @typedef {import('mdast').Root} Root
- *
  * @typedef {import('mdast-util-directive')} DoNotTouchAsThisImportIncludesDirectivesInTree
+ * @typedef {import('unified').Processor<Root>} Processor
  */
 
 import {directive} from 'micromark-extension-directive'
 import {directiveFromMarkdown, directiveToMarkdown} from 'mdast-util-directive'
 
 /**
- * Plugin to support the generic directives proposal (`:cite[smith04]`,
- * `::youtube[Video of a cat in a box]{v=01ab2cd3efg}`, and such).
+ * Add support for generic directives.
  *
- * @this {import('unified').Processor}
- * @type {import('unified').Plugin<void[], Root>}
+ * @returns {undefined}
+ *   Nothing.
  */
 export default function remarkDirective() {
-  const data = this.data()
+  // @ts-expect-error: TS is wrong about `this`.
+  // eslint-disable-next-line unicorn/no-this-assignment
+  const self = /** @type {Processor} */ (this)
+  const data = self.data()
 
-  add('micromarkExtensions', directive())
-  add('fromMarkdownExtensions', directiveFromMarkdown)
-  add('toMarkdownExtensions', directiveToMarkdown)
+  /** @type {Array<unknown>} */
+  // @ts-expect-error: to do: remove.
+  const micromarkExtensions =
+    data.micromarkExtensions || (data.micromarkExtensions = [])
+  /** @type {Array<unknown>} */
+  // @ts-expect-error: to do: remove.
+  const fromMarkdownExtensions =
+    data.fromMarkdownExtensions || (data.fromMarkdownExtensions = [])
+  /** @type {Array<unknown>} */
+  // @ts-expect-error: to do: remove.
+  const toMarkdownExtensions =
+    data.toMarkdownExtensions || (data.toMarkdownExtensions = [])
 
-  /**
-   * @param {string} field
-   * @param {unknown} value
-   */
-  function add(field, value) {
-    const list = /** @type {unknown[]} */ (
-      // Other extensions
-      /* c8 ignore next 2 */
-      data[field] || (data[field] = [])
-    )
-
-    list.push(value)
-  }
+  micromarkExtensions.push(directive())
+  fromMarkdownExtensions.push(directiveFromMarkdown)
+  toMarkdownExtensions.push(directiveToMarkdown)
 }
