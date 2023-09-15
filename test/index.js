@@ -2,66 +2,77 @@
  * @typedef {import('mdast').Root} Root
  */
 
-import fs from 'node:fs'
-import path from 'node:path'
-import test from 'tape'
-import {readSync} from 'to-vfile'
-import {unified} from 'unified'
-import {remark} from 'remark'
+import assert from 'node:assert/strict'
+import fs from 'node:fs/promises'
+import process from 'node:process'
+import test from 'node:test'
 import {isHidden} from 'is-hidden'
-import directive from '../index.js'
+import {remark} from 'remark'
+import remarkDirective from '../index.js'
 
-test('directive()', (t) => {
-  t.doesNotThrow(() => {
-    remark().use(directive).freeze()
-  }, 'should not throw if not passed options')
+test('remarkDirective', async function (t) {
+  await t.test('should expose the public api', async function () {
+    assert.deepEqual(Object.keys(await import('../index.js')).sort(), [
+      'default'
+    ])
+  })
 
-  t.doesNotThrow(() => {
-    unified().use(directive).freeze()
-  }, 'should not throw if without parser or compiler')
-
-  t.end()
+  await t.test('should not throw if not passed options', async function () {
+    assert.doesNotThrow(function () {
+      remark().use(remarkDirective).freeze()
+    })
+  })
 })
 
-test('fixtures', (t) => {
-  const base = path.join('test', 'fixtures')
-  const entries = fs.readdirSync(base).filter((d) => !isHidden(d))
-
-  t.plan(entries.length)
+test('fixtures', async function (t) {
+  const base = new URL('fixtures/', import.meta.url)
+  const folders = await fs.readdir(base)
 
   let index = -1
-  while (++index < entries.length) {
-    const fixture = entries[index]
-    t.test(fixture, (st) => {
-      const file = readSync(path.join(base, fixture, 'input.md'))
-      const input = String(file)
-      const outputPath = path.join(base, fixture, 'output.md')
-      const treePath = path.join(base, fixture, 'tree.json')
-      const proc = remark().use(directive).freeze()
-      const actual = proc.parse(file)
-      /** @type {string} */
-      let output
+
+  while (++index < folders.length) {
+    const folder = folders[index]
+
+    if (isHidden(folder)) continue
+
+    await t.test(folder, async function () {
+      const folderUrl = new URL(folder + '/', base)
+      const inputUrl = new URL('input.md', folderUrl)
+      const outputUrl = new URL('output.md', folderUrl)
+      const treeUrl = new URL('tree.json', folderUrl)
+
+      const input = String(await fs.readFile(inputUrl))
+
       /** @type {Root} */
       let expected
+      /** @type {string} */
+      let output
+
+      const proc = remark().use(remarkDirective)
+      const actual = proc.parse(input)
 
       try {
-        expected = JSON.parse(String(fs.readFileSync(treePath)))
-      } catch {
-        // New fixture.
-        fs.writeFileSync(treePath, JSON.stringify(actual, null, 2) + '\n')
-        expected = actual
-      }
-
-      try {
-        output = fs.readFileSync(outputPath, 'utf8')
+        output = String(await fs.readFile(outputUrl))
       } catch {
         output = input
       }
 
-      st.deepEqual(actual, expected, 'tree')
-      st.equal(String(proc.processSync(file)), output, 'process')
+      try {
+        if ('UPDATE' in process.env) {
+          throw new Error('Updating…')
+        }
 
-      st.end()
+        expected = JSON.parse(String(await fs.readFile(treeUrl)))
+      } catch {
+        expected = actual
+
+        // New fixture.
+        await fs.writeFile(treeUrl, JSON.stringify(actual, undefined, 2) + '\n')
+      }
+
+      assert.deepEqual(actual, expected)
+
+      assert.equal(String(await proc.process(input)), String(output))
     })
   }
 })
