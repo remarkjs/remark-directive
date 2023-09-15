@@ -29,7 +29,7 @@ export default function remarkDirective() {
     const list = /** @type {unknown[]} */ (
       // Other extensions
       /* c8 ignore next 2 */
-      data[field] ? data[field] : (data[field] = [])
+      data[field] || (data[field] = [])
     )
 
     list.push(value)
