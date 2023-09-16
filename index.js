@@ -10,6 +10,10 @@ import {directiveFromMarkdown, directiveToMarkdown} from 'mdast-util-directive'
 /**
  * Add support for generic directives.
  *
+ * ###### Notes
+ *
+ * Doesn’t handle the directives: create your own plugin to do that.
+ *
  * @returns {undefined}
  *   Nothing.
  */

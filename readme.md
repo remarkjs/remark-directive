@@ -8,9 +8,9 @@
 [![Backers][backers-badge]][collective]
 [![Chat][chat-badge]][chat]
 
-[**remark**][remark] plugin to support the [generic directives proposal][prop]
-(`:cite[smith04]`, `::youtube[Video of a cat in a box]{v=01ab2cd3efg}`, and
-such).
+**[remark][]** plugin to support the [generic directives
+proposal][commonmark-prop] (`:cite[smith04]`,
+`::youtube[Video of a cat in a box]{v=01ab2cd3efg}`, and such).
 
 ## Contents
 
@@ -23,6 +23,9 @@ such).
 *   [Examples](#examples)
     *   [Example: YouTube](#example-youtube)
     *   [Example: Styled blocks](#example-styled-blocks)
+*   [Authoring](#authoring)
+*   [HTML](#html)
+*   [CSS](#css)
 *   [Syntax](#syntax)
 *   [Syntax tree](#syntax-tree)
 *   [Types](#types)
@@ -36,35 +39,32 @@ such).
 
 This package is a [unified][] ([remark][]) plugin to add support for directives:
 one syntax for arbitrary extensions in markdown.
-You can use this with some more code to match your specific needs, to allow for
-anything from callouts, citations, styled blocks, forms, embeds, spoilers, etc.
-
-**unified** is a project that transforms content with abstract syntax trees
-(ASTs).
-**remark** adds support for markdown to unified.
-**mdast** is the markdown AST that remark uses.
-**micromark** is the markdown parser we use.
-This is a remark plugin that adds support for the directives syntax and AST to
-remark.
 
 ## When should I use this?
 
 Directives are one of the four ways to extend markdown: an arbitrary extension
-syntax (see [Extending markdown](https://github.com/micromark/micromark#extending-markdown)
-in micromark’s docs for the alternatives and more info).
+syntax (see [Extending markdown][micromark-extending-markdown] in micromark’s
+docs for the alternatives and more info).
 This mechanism works well when you control the content: who authors it, what
 tools handle it, and where it’s displayed.
 When authors can read a guide on how to embed a tweet but are not expected to
 know the ins and outs of HTML or JavaScript.
 Directives don’t work well if you don’t know who authors content, what tools
 handle it, and where it ends up.
-Example use cases are a docs website for a project or product, or blogging tools
-and static site generators.
+Example use cases are a docs website for a project or product, or blogging
+tools and static site generators.
+
+If you *just* want to turn markdown into HTML (with maybe a few extensions such
+as this one), we recommend [`micromark`][micromark] with
+[`micromark-extension-directive`][micromark-extension-directive] instead.
+If you don’t use plugins and want to access the syntax tree, you can use
+[`mdast-util-from-markdown`][mdast-util-from-markdown] with
+[`mdast-util-directive`][mdast-util-directive].
 
 ## Install
 
-This package is [ESM only](https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c).
-In Node.js (version 12.20+, 14.14+, or 16.0+), install with [npm][]:
+This package is [ESM only][esm].
+In Node.js (version 16+), install with [npm][]:
 
 ```sh
 npm install remark-directive
@@ -86,7 +86,7 @@ In browsers with [`esm.sh`][esmsh]:
 
 ## Use
 
-Say we have the following file, `example.md`:
+Say our document `example.md` contains:
 
 ```markdown
 :::main{#readme}
@@ -101,48 +101,54 @@ A :i[lovely] language know as :abbr[HTML]{title="HyperText Markup Language"}.
 :::
 ```
 
-And our module, `example.js`, looks as follows:
+…and our module `example.js` contains:
 
 ```js
-import {read} from 'to-vfile'
-import {unified} from 'unified'
-import remarkParse from 'remark-parse'
-import remarkDirective from 'remark-directive'
-import remarkRehype from 'remark-rehype'
+// Register `hName`, `hProperties` types, used when turning markdown to HTML:
+/// <reference types="mdast-util-to-hast" />
+// Register directive nodes in mdast:
+/// <reference types="mdast-util-directive" />
+
+import {h} from 'hastscript'
 import rehypeFormat from 'rehype-format'
 import rehypeStringify from 'rehype-stringify'
+import remarkDirective from 'remark-directive'
+import remarkParse from 'remark-parse'
+import remarkRehype from 'remark-rehype'
+import {read} from 'to-vfile'
+import {unified} from 'unified'
 import {visit} from 'unist-util-visit'
-import {h} from 'hastscript'
 
-main()
+const file = await unified()
+  .use(remarkParse)
+  .use(remarkDirective)
+  .use(myRemarkPlugin)
+  .use(remarkRehype)
+  .use(rehypeFormat)
+  .use(rehypeStringify)
+  .process(await read('example.md'))
 
-async function main() {
-  const file = await unified()
-    .use(remarkParse)
-    .use(remarkDirective)
-    .use(myRemarkPlugin)
-    .use(remarkRehype)
-    .use(rehypeFormat)
-    .use(rehypeStringify)
-    .process(await read('example.md'))
-
-  console.log(String(file))
-}
+console.log(String(file))
 
 // This plugin is an example to let users write HTML with directives.
 // It’s informative but rather useless.
 // See below for others examples.
-/** @type {import('unified').Plugin<[], import('mdast').Root>} */
 function myRemarkPlugin() {
-  return (tree) => {
-    visit(tree, (node) => {
+  /**
+   * @param {import('mdast').Root} tree
+   *   Tree.
+   * @returns {undefined}
+   *   Nothing.
+   */
+  return function (tree) {
+    visit(tree, function (node) {
       if (
-        node.type === 'textDirective' ||
+        node.type === 'containerDirective' ||
         node.type === 'leafDirective' ||
-        node.type === 'containerDirective'
+        node.type === 'textDirective'
       ) {
         const data = node.data || (node.data = {})
-        const hast = h(node.name, node.attributes)
+        const hast = h(node.name, node.attributes || {})
 
         data.hName = hast.tagName
         data.hProperties = hast.properties
@@ -152,7 +158,7 @@ function myRemarkPlugin() {
 }
 ```
 
-Now, running `node example` yields:
+…then running `node example.js` yields:
 
 ```html
 <main id="readme">
@@ -165,13 +171,24 @@ Now, running `node example` yields:
 ## API
 
 This package exports no identifiers.
-The default export is `remarkDirective`.
+The default export is [`remarkDirective`][api-remark-directive].
 
 ### `unified().use(remarkDirective)`
 
-Configures remark so that it can parse and serialize directives.
-Doesn’t handle the directives: [create your own plugin][create-plugin] to do
-that.
+Add support for generic directives.
+
+###### Parameters
+
+There are no parameters.
+
+###### Returns
+
+Nothing (`undefined`).
+
+###### Notes
+
+Doesn’t handle the directives:
+[create your own plugin][unified-create-plugin] to do that.
 
 ## Examples
 
@@ -182,15 +199,29 @@ It’s based on the example in Use above.
 If `myRemarkPlugin` was replaced with this function:
 
 ```js
+// Register `hName`, `hProperties` types, used when turning markdown to HTML:
+/// <reference types="mdast-util-to-hast" />
+// Register directive nodes in mdast:
+/// <reference types="mdast-util-directive" />
+
+import {visit} from 'unist-util-visit'
+
 // This plugin is an example to turn `::youtube` into iframes.
-/** @type {import('unified').Plugin<[], import('mdast').Root>} */
 function myRemarkPlugin() {
+  /**
+   * @param {import('mdast').Root} tree
+   *   Tree.
+   * @param {import('vfile').VFile} file
+   *   File.
+   * @returns {undefined}
+   *   Nothing.
+   */
   return (tree, file) => {
-    visit(tree, (node) => {
+    visit(tree, function (node) {
       if (
-        node.type === 'textDirective' ||
+        node.type === 'containerDirective' ||
         node.type === 'leafDirective' ||
-        node.type === 'containerDirective'
+        node.type === 'textDirective'
       ) {
         if (node.name !== 'youtube') return
 
@@ -198,8 +229,16 @@ function myRemarkPlugin() {
         const attributes = node.attributes || {}
         const id = attributes.id
 
-        if (node.type === 'textDirective') file.fail('Text directives for `youtube` not supported', node)
-        if (!id) file.fail('Missing video id', node)
+        if (node.type === 'textDirective') {
+          file.fail(
+            'Unexpected `:youtube` text directive, use two colons for a leaf directive',
+            node
+          )
+        }
+
+        if (!id) {
+          file.fail('Unexpected missing `id` on `youtube` directive', node)
+        }
 
         data.hName = 'iframe'
         data.hProperties = {
@@ -224,7 +263,7 @@ function myRemarkPlugin() {
 ::youtube[Video of a cat in a box]{#01ab2cd3efg}
 ```
 
-…then running `node example` yields:
+…then running `node example.js` yields:
 
 ```html
 <h1>Cat videos</h1>
@@ -233,23 +272,37 @@ function myRemarkPlugin() {
 
 ### Example: Styled blocks
 
-Note: This is sometimes called admonitions, callouts, etc.
+> 👉 **Note**: This is sometimes called admonitions, callouts, etc.
 
 This example shows how directives can be used to style blocks.
 It’s based on the example in Use above.
 If `myRemarkPlugin` was replaced with this function:
 
 ```js
+// Register `hName`, `hProperties` types, used when turning markdown to HTML:
+/// <reference types="mdast-util-to-hast" />
+// Register directive nodes in mdast:
+/// <reference types="mdast-util-directive" />
+
+import {h} from 'hastscript'
+import {visit} from 'unist-util-visit'
+
+// This plugin is an example to turn `::youtube` into iframes.
 // This plugin is an example to turn `::note` into divs, passing arbitrary
 // attributes.
-/** @type {import('unified').Plugin<[], import('mdast').Root>} */
 function myRemarkPlugin() {
+  /**
+   * @param {import('mdast').Root} tree
+   *   Tree.
+   * @returns {undefined}
+   *   Nothing.
+   */
   return (tree) => {
     visit(tree, (node) => {
       if (
-        node.type === 'textDirective' ||
+        node.type === 'containerDirective' ||
         node.type === 'leafDirective' ||
-        node.type === 'containerDirective'
+        node.type === 'textDirective'
       ) {
         if (node.name !== 'note') return
 
@@ -257,7 +310,7 @@ function myRemarkPlugin() {
         const tagName = node.type === 'textDirective' ? 'span' : 'div'
 
         data.hName = tagName
-        data.hProperties = h(tagName, node.attributes).properties
+        data.hProperties = h(tagName, node.attributes || {}).properties
       }
     })
   }
@@ -286,36 +339,55 @@ if you chose xxx, you should also use yyy somewhere…
 </div>
 ```
 
+## Authoring
+
+When authoring markdown with directives, keep in mind that they don’t work in
+most places.
+On your own site it can be great!
+
+## HTML
+
+You can define how directives are turned into HTML.
+If directives are not handled, they do not emit anything.
+
+## CSS
+
+How to display directives is left as an exercise for the reader.
+
 ## Syntax
 
-This plugin applies a micromark extensions to parse the syntax.
-See its readme for parse details:
-
-*   [`micromark-extension-directive`](https://github.com/micromark/micromark-extension-directive#syntax)
+See [*Syntax* in
+`micromark-extension-directive`](https://github.com/micromark/micromark-extension-directive#syntax).
 
 ## Syntax tree
 
-This plugin applies one mdast utility to build and serialize the AST.
-See its readme for the node types supported in the tree:
-
-*   [`mdast-util-directive`](https://github.com/syntax-tree/mdast-util-directive#syntax-tree)
+See [*Syntax tree* in
+`mdast-util-directive`](https://github.com/syntax-tree/mdast-util-directive#syntax-tree).
 
 ## Types
 
 This package is fully typed with [TypeScript][].
-If you’re working with the syntax tree, make sure to import this plugin
-somewhere in your types, as that registers the new node types in the tree.
+It exports no additional options.
+
+If you’re working with the syntax tree, you can register the new node types
+with `@types/mdast` by adding a reference:
 
 ```js
-/** @typedef {import('remark-directive')} */
+// Register directive nodes in mdast:
+/// <reference types="mdast-util-directive" />
 
 import {visit} from 'unist-util-visit'
 
-/** @type {import('unified').Plugin<[], import('mdast').Root>} */
-export default function myRemarkPlugin() {
+function myRemarkPlugin() {
+  /**
+   * @param {import('mdast').Root} tree
+   *   Tree.
+   * @returns {undefined}
+   *   Nothing.
+   */
   return (tree) => {
-    visit(tree, (node) => {
-      // `node` can now be one of the nodes for directives.
+    visit(tree, function (node) {
+      console.log(node) // `node` can now be one of the nodes for directives.
     })
   }
 }
@@ -323,18 +395,19 @@ export default function myRemarkPlugin() {
 
 ## Compatibility
 
-Projects maintained by the unified collective are compatible with all maintained
+Projects maintained by the unified collective are compatible with maintained
 versions of Node.js.
-As of now, that is Node.js 12.20+, 14.14+, and 16.0+.
-Our projects sometimes work with older versions, but this is not guaranteed.
 
-This plugin works with unified version 9+ and remark version 14+.
+When we cut a new major release, we drop support for unmaintained versions of
+Node.
+This means we try to keep the current release line, `remark-directive@^2`,
+compatible with Node.js 12.
 
 ## Security
 
-Use of `remark-directive` does not involve [**rehype**][rehype]
-([**hast**][hast]) or user content so there are no openings for [cross-site
-scripting (XSS)][xss] attacks.
+Use of `remark-directive` does not involve **[rehype][]** ([hast][]) or user
+content so there are no openings for [cross-site scripting (XSS)][wiki-xss]
+attacks.
 
 ## Related
 
@@ -346,7 +419,7 @@ scripting (XSS)][xss] attacks.
 *   [`remark-math`](https://github.com/remarkjs/remark-math)
     — support math
 *   [`remark-mdx`](https://github.com/mdx-js/mdx/tree/main/packages/remark-mdx)
-    — support MDX (JSX, expressions, ESM)
+    — support MDX (ESM, JSX, expressions)
 
 ## Contribute
 
@@ -376,9 +449,9 @@ abide by its terms.
 
 [downloads]: https://www.npmjs.com/package/remark-directive
 
-[size-badge]: https://img.shields.io/bundlephobia/minzip/remark-directive.svg
+[size-badge]: https://img.shields.io/bundlejs/size/remark-directive
 
-[size]: https://bundlephobia.com/result?p=remark-directive
+[size]: https://bundlejs.com/?q=remark-directive
 
 [sponsors-badge]: https://opencollective.com/unified/sponsors/badge.svg
 
@@ -392,32 +465,46 @@ abide by its terms.
 
 [npm]: https://docs.npmjs.com/cli/install
 
+[esm]: https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c
+
 [esmsh]: https://esm.sh
 
 [health]: https://github.com/remarkjs/.github
 
-[contributing]: https://github.com/remarkjs/.github/blob/HEAD/contributing.md
+[contributing]: https://github.com/remarkjs/.github/blob/main/contributing.md
 
-[support]: https://github.com/remarkjs/.github/blob/HEAD/support.md
+[support]: https://github.com/remarkjs/.github/blob/main/support.md
 
-[coc]: https://github.com/remarkjs/.github/blob/HEAD/code-of-conduct.md
+[coc]: https://github.com/remarkjs/.github/blob/main/code-of-conduct.md
 
 [license]: license
 
 [author]: https://wooorm.com
 
-[unified]: https://github.com/unifiedjs/unified
-
-[remark]: https://github.com/remarkjs/remark
-
-[xss]: https://en.wikipedia.org/wiki/Cross-site_scripting
-
-[typescript]: https://www.typescriptlang.org
-
-[rehype]: https://github.com/rehypejs/rehype
+[commonmark-prop]: https://talk.commonmark.org/t/generic-directives-plugins-syntax/444
 
 [hast]: https://github.com/syntax-tree/hast
 
-[prop]: https://talk.commonmark.org/t/generic-directives-plugins-syntax/444
+[mdast-util-directive]: https://github.com/syntax-tree/mdast-util-directive
 
-[create-plugin]: https://unifiedjs.com/learn/guide/create-a-plugin/
+[mdast-util-from-markdown]: https://github.com/syntax-tree/mdast-util-from-markdown
+
+[micromark]: https://github.com/micromark/micromark
+
+[micromark-extension-directive]: https://github.com/micromark/micromark-extension-directive
+
+[micromark-extending-markdown]: https://github.com/micromark/micromark#extending-markdown
+
+[rehype]: https://github.com/rehypejs/rehype
+
+[remark]: https://github.com/remarkjs/remark
+
+[typescript]: https://www.typescriptlang.org
+
+[unified]: https://github.com/unifiedjs/unified
+
+[unified-create-plugin]: https://unifiedjs.com/learn/guide/create-a-plugin/
+
+[wiki-xss]: https://en.wikipedia.org/wiki/Cross-site_scripting
+
+[api-remark-directive]: #unifieduseremarkdirective
