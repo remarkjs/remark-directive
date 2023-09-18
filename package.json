@@ -57,7 +57,7 @@
     "prepack": "npm run build && npm run format",
     "test": "npm run build && npm run format && npm run test-coverage",
     "test-api": "node --conditions development test/index.js",
-    "test-coverage": "c8 --100 --check-coverage --reporter lcov npm run test-api"
+    "test-coverage": "c8 --100 --reporter lcov npm run test-api"
   },
   "prettier": {
     "bracketSpacing": false,
