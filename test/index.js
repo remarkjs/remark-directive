@@ -8,11 +8,11 @@ import process from 'node:process'
 import test from 'node:test'
 import {isHidden} from 'is-hidden'
 import {remark} from 'remark'
-import remarkDirective from '../index.js'
+import remarkDirective from 'remark-directive'
 
 test('remarkDirective', async function (t) {
   await t.test('should expose the public api', async function () {
-    assert.deepEqual(Object.keys(await import('../index.js')).sort(), [
+    assert.deepEqual(Object.keys(await import('remark-directive')).sort(), [
       'default'
     ])
   })
