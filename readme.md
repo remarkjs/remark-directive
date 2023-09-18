@@ -73,14 +73,14 @@ npm install remark-directive
 In Deno with [`esm.sh`][esmsh]:
 
 ```js
-import remarkDirective from 'https://esm.sh/remark-directive@2'
+import remarkDirective from 'https://esm.sh/remark-directive@3'
 ```
 
 In browsers with [`esm.sh`][esmsh]:
 
 ```html
 <script type="module">
-  import remarkDirective from 'https://esm.sh/remark-directive@2?bundle'
+  import remarkDirective from 'https://esm.sh/remark-directive@3?bundle'
 </script>
 ```
 
