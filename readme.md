@@ -287,7 +287,6 @@ If `myRemarkPlugin` was replaced with this function:
 import {h} from 'hastscript'
 import {visit} from 'unist-util-visit'
 
-// This plugin is an example to turn `::youtube` into iframes.
 // This plugin is an example to turn `::note` into divs, passing arbitrary
 // attributes.
 function myRemarkPlugin() {
