@@ -104,10 +104,11 @@ A :i[lovely] language know as :abbr[HTML]{title="HyperText Markup Language"}.
 …and our module `example.js` contains:
 
 ```js
-// Register `hName`, `hProperties` types, used when turning markdown to HTML:
-/// <reference types="mdast-util-to-hast" />
-// Register directive nodes in mdast:
-/// <reference types="mdast-util-directive" />
+/**
+ * @import {} from 'mdast-util-directive'
+ * @import {} from 'mdast-util-to-hast'
+ * @import {Root} from 'mdast'
+ */
 
 import {h} from 'hastscript'
 import rehypeFormat from 'rehype-format'
@@ -135,7 +136,7 @@ console.log(String(file))
 // See below for others examples.
 function myRemarkPlugin() {
   /**
-   * @param {import('mdast').Root} tree
+   * @param {Root} tree
    *   Tree.
    * @returns {undefined}
    *   Nothing.
@@ -199,19 +200,21 @@ It’s based on the example in Use above.
 If `myRemarkPlugin` was replaced with this function:
 
 ```js
-// Register `hName`, `hProperties` types, used when turning markdown to HTML:
-/// <reference types="mdast-util-to-hast" />
-// Register directive nodes in mdast:
-/// <reference types="mdast-util-directive" />
+/**
+ * @import {} from 'mdast-util-directive'
+ * @import {} from 'mdast-util-to-hast'
+ * @import {Root} from 'mdast'
+ * @import {VFile} from 'vfile'
+ */
 
 import {visit} from 'unist-util-visit'
 
 // This plugin is an example to turn `::youtube` into iframes.
 function myRemarkPlugin() {
   /**
-   * @param {import('mdast').Root} tree
+   * @param {Root} tree
    *   Tree.
-   * @param {import('vfile').VFile} file
+   * @param {VFile} file
    *   File.
    * @returns {undefined}
    *   Nothing.
@@ -279,10 +282,11 @@ It’s based on the example in Use above.
 If `myRemarkPlugin` was replaced with this function:
 
 ```js
-// Register `hName`, `hProperties` types, used when turning markdown to HTML:
-/// <reference types="mdast-util-to-hast" />
-// Register directive nodes in mdast:
-/// <reference types="mdast-util-directive" />
+/**
+ * @import {} from 'mdast-util-directive'
+ * @import {} from 'mdast-util-to-hast'
+ * @import {Root} from 'mdast'
+ */
 
 import {h} from 'hastscript'
 import {visit} from 'unist-util-visit'
@@ -291,7 +295,7 @@ import {visit} from 'unist-util-visit'
 // attributes.
 function myRemarkPlugin() {
   /**
-   * @param {import('mdast').Root} tree
+   * @param {Root} tree
    *   Tree.
    * @returns {undefined}
    *   Nothing.
@@ -372,14 +376,16 @@ If you’re working with the syntax tree, you can register the new node types
 with `@types/mdast` by adding a reference:
 
 ```js
-// Register directive nodes in mdast:
-/// <reference types="mdast-util-directive" />
+/**
+ * @import {} from 'mdast-util-directive'
+ * @import {Root} from 'mdast'
+ */
 
 import {visit} from 'unist-util-visit'
 
 function myRemarkPlugin() {
   /**
-   * @param {import('mdast').Root} tree
+   * @param {Root} tree
    *   Tree.
    * @returns {undefined}
    *   Nothing.
