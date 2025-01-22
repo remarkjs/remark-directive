@@ -19,7 +19,8 @@ proposal][commonmark-prop] (`:cite[smith04]`,
 * [Install](#install)
 * [Use](#use)
 * [API](#api)
-  * [`unified().use(remarkDirective)`](#unifieduseremarkdirective)
+  * [`unified().use(remarkDirective[, options])`](#unifieduseremarkdirective-options)
+  * [`Options`](#options)
 * [Examples](#examples)
   * [Example: YouTube](#example-youtube)
   * [Example: Styled blocks](#example-styled-blocks)
@@ -174,13 +175,14 @@ function myRemarkPlugin() {
 This package exports no identifiers.
 The default export is [`remarkDirective`][api-remark-directive].
 
-### `unified().use(remarkDirective)`
+### `unified().use(remarkDirective[, options])`
 
 Add support for generic directives.
 
 ###### Parameters
 
-There are no parameters.
+* `options` ([`Options`][api-options], optional)
+  — configuration
 
 ###### Returns
 
@@ -190,6 +192,29 @@ Nothing (`undefined`).
 
 Doesn’t handle the directives:
 [create your own plugin][unified-create-plugin] to do that.
+
+### `Options`
+
+Configuration (TypeScript type).
+
+###### Fields
+
+* `collapseEmptyAttributes`
+  (`boolean`, default: `true`)
+  — collapse empty attributes: get `title` instead of `title=""`
+* `preferShortcut`
+  (`boolean`, default: `true`)
+  — prefer `#` and `.` shortcuts for `id` and `class`
+* `preferUnquoted`
+  (`boolean`, default: `false`)
+  — leave attributes unquoted if that results in less bytes
+* `quoteSmart`
+  (`boolean`, default: `false`)
+  — use the other quote if that results in less bytes
+* `quote`
+  (`'"'` or `"'"`,
+  default: the [`quote`][quote] used by `remark-stringify` for titles)
+  — preferred quote to use around attribute values
 
 ## Examples
 
@@ -500,6 +525,8 @@ abide by its terms.
 
 [micromark-extending-markdown]: https://github.com/micromark/micromark#extending-markdown
 
+[quote]: https://github.com/remarkjs/remark/tree/main/packages/remark-stringify#options
+
 [rehype]: https://github.com/rehypejs/rehype
 
 [remark]: https://github.com/remarkjs/remark
@@ -512,4 +539,6 @@ abide by its terms.
 
 [wiki-xss]: https://en.wikipedia.org/wiki/Cross-site_scripting
 
-[api-remark-directive]: #unifieduseremarkdirective
+[api-remark-directive]: #unifieduseremarkdirective-options
+
+[api-options]: #options
