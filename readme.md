@@ -1,15 +1,13 @@
 # remark-directive
 
-[![Build][build-badge]][build]
-[![Coverage][coverage-badge]][coverage]
-[![Downloads][downloads-badge]][downloads]
-[![Size][size-badge]][size]
-[![Sponsors][sponsors-badge]][collective]
-[![Backers][backers-badge]][collective]
-[![Chat][chat-badge]][chat]
+[![Build][badge-build-image]][badge-build-url]
+[![Coverage][badge-coverage-image]][badge-coverage-url]
+[![Downloads][badge-downloads-image]][badge-downloads-url]
+[![Size][badge-size-image]][badge-size-url]
 
-**[remark][]** plugin to support the [generic directives
-proposal][commonmark-prop] (`:cite[smith04]`,
+**[remark][github-remark]** plugin to support the
+[generic directives proposal][commonmark-directive-proposal]
+(`:cite[smith04]`,
 `::youtube[Video of a cat in a box]{v=01ab2cd3efg}`, and such).
 
 ## Contents
@@ -38,14 +36,16 @@ proposal][commonmark-prop] (`:cite[smith04]`,
 
 ## What is this?
 
-This package is a [unified][] ([remark][]) plugin to add support for directives:
+This package is a [unified][github-unified]
+([remark][github-remark])
+plugin to add support for directives:
 one syntax for arbitrary extensions in markdown.
 
 ## When should I use this?
 
 Directives are one of the four ways to extend markdown: an arbitrary extension
-syntax (see [Extending markdown][micromark-extending-markdown] in micromark’s
-docs for the alternatives and more info).
+syntax (see [Extending markdown][github-micromark-extending-markdown] in
+micromark’s docs for the alternatives and more info).
 This mechanism works well when you control the content: who authors it, what
 tools handle it, and where it’s displayed.
 When authors can read a guide on how to embed a tweet but are not expected to
@@ -56,16 +56,16 @@ Example use cases are a docs website for a project or product, or blogging
 tools and static site generators.
 
 If you *just* want to turn markdown into HTML (with maybe a few extensions such
-as this one), we recommend [`micromark`][micromark] with
-[`micromark-extension-directive`][micromark-extension-directive] instead.
+as this one), we recommend [`micromark`][github-micromark] with
+[`micromark-extension-directive`][github-micromark-extension-directive] instead.
 If you don’t use plugins and want to access the syntax tree, you can use
-[`mdast-util-from-markdown`][mdast-util-from-markdown] with
-[`mdast-util-directive`][mdast-util-directive].
+[`mdast-util-from-markdown`][github-mdast-util-from-markdown] with
+[`mdast-util-directive`][github-mdast-util-directive].
 
 ## Install
 
-This package is [ESM only][esm].
-In Node.js (version 16+), install with [npm][]:
+This package is [ESM only][github-gist-esm].
+In Node.js (version 16+), install with [npm][npmjs-install]:
 
 ```sh
 npm install remark-directive
@@ -191,7 +191,7 @@ Nothing (`undefined`).
 ###### Notes
 
 Doesn’t handle the directives:
-[create your own plugin][unified-create-plugin] to do that.
+[create your own plugin][unifiedjs-create-remark-plugin] to do that.
 
 ### `Options`
 
@@ -213,7 +213,9 @@ Configuration (TypeScript type).
   — use the other quote if that results in less bytes
 * `quote`
   (`'"'` or `"'"`,
-  default: the [`quote`][quote] used by `remark-stringify` for titles)
+  default:
+  the [`quote`][github-remark-stringify-quote] used by `remark-stringify` for
+  titles)
   — preferred quote to use around attribute values
 
 ## Examples
@@ -435,9 +437,10 @@ compatible with Node.js 16.
 
 ## Security
 
-Use of `remark-directive` does not involve **[rehype][]** ([hast][]) or user
-content so there are no openings for [cross-site scripting (XSS)][wiki-xss]
-attacks.
+Use of `remark-directive` does not involve **[rehype][github-rehype]**
+([hast][github-hast])
+or user content so there are no openings for
+[cross-site scripting (XSS)][wikipedia-xss] attacks.
 
 ## Related
 
@@ -453,92 +456,84 @@ attacks.
 
 ## Contribute
 
-See [`contributing.md`][contributing] in [`remarkjs/.github`][health] for ways
-to get started.
-See [`support.md`][support] for ways to get help.
+See [`contributing.md`][health-contributing]
+in
+[`remarkjs/.github`][health]
+for ways to get started.
+See [`support.md`][health-support] for ways to get help.
 
-This project has a [code of conduct][coc].
+This project has a [code of conduct][health-coc].
 By interacting with this repository, organization, or community you agree to
 abide by its terms.
 
 ## License
 
-[MIT][license] © [Titus Wormer][author]
+[MIT][file-license] © [Titus Wormer][wooorm]
 
 <!-- Definitions -->
 
-[build-badge]: https://github.com/remarkjs/remark-directive/workflows/main/badge.svg
-
-[build]: https://github.com/remarkjs/remark-directive/actions
-
-[coverage-badge]: https://img.shields.io/codecov/c/github/remarkjs/remark-directive.svg
-
-[coverage]: https://codecov.io/github/remarkjs/remark-directive
-
-[downloads-badge]: https://img.shields.io/npm/dm/remark-directive.svg
-
-[downloads]: https://www.npmjs.com/package/remark-directive
-
-[size-badge]: https://img.shields.io/bundlejs/size/remark-directive
-
-[size]: https://bundlejs.com/?q=remark-directive
-
-[sponsors-badge]: https://opencollective.com/unified/sponsors/badge.svg
-
-[backers-badge]: https://opencollective.com/unified/backers/badge.svg
-
-[collective]: https://opencollective.com/unified
-
-[chat-badge]: https://img.shields.io/badge/chat-discussions-success.svg
-
-[chat]: https://github.com/remarkjs/remark/discussions
-
-[npm]: https://docs.npmjs.com/cli/install
-
-[esm]: https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c
-
-[esmsh]: https://esm.sh
-
-[health]: https://github.com/remarkjs/.github
-
-[contributing]: https://github.com/remarkjs/.github/blob/main/contributing.md
-
-[support]: https://github.com/remarkjs/.github/blob/main/support.md
-
-[coc]: https://github.com/remarkjs/.github/blob/main/code-of-conduct.md
-
-[license]: license
-
-[author]: https://wooorm.com
-
-[commonmark-prop]: https://talk.commonmark.org/t/generic-directives-plugins-syntax/444
-
-[hast]: https://github.com/syntax-tree/hast
-
-[mdast-util-directive]: https://github.com/syntax-tree/mdast-util-directive
-
-[mdast-util-from-markdown]: https://github.com/syntax-tree/mdast-util-from-markdown
-
-[micromark]: https://github.com/micromark/micromark
-
-[micromark-extension-directive]: https://github.com/micromark/micromark-extension-directive
-
-[micromark-extending-markdown]: https://github.com/micromark/micromark#extending-markdown
-
-[quote]: https://github.com/remarkjs/remark/tree/main/packages/remark-stringify#options
-
-[rehype]: https://github.com/rehypejs/rehype
-
-[remark]: https://github.com/remarkjs/remark
-
-[typescript]: https://www.typescriptlang.org
-
-[unified]: https://github.com/unifiedjs/unified
-
-[unified-create-plugin]: https://unifiedjs.com/learn/guide/create-a-plugin/
-
-[wiki-xss]: https://en.wikipedia.org/wiki/Cross-site_scripting
+[api-options]: #options
 
 [api-remark-directive]: #unifieduseremarkdirective-options
 
-[api-options]: #options
+[badge-build-image]: https://github.com/remarkjs/remark-directive/workflows/main/badge.svg
+
+[badge-build-url]: https://github.com/remarkjs/remark-directive/actions
+
+[badge-coverage-image]: https://img.shields.io/codecov/c/github/remarkjs/remark-directive.svg
+
+[badge-coverage-url]: https://codecov.io/github/remarkjs/remark-directive
+
+[badge-downloads-image]: https://img.shields.io/npm/dm/remark-directive.svg
+
+[badge-downloads-url]: https://www.npmjs.com/package/remark-directive
+
+[badge-size-image]: https://img.shields.io/bundlejs/size/remark-directive
+
+[badge-size-url]: https://bundlejs.com/?q=remark-directive
+
+[commonmark-directive-proposal]: https://talk.commonmark.org/t/generic-directives-plugins-syntax/444
+
+[esmsh]: https://esm.sh
+
+[file-license]: license
+
+[github-gist-esm]: https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c
+
+[github-hast]: https://github.com/syntax-tree/hast
+
+[github-mdast-util-directive]: https://github.com/syntax-tree/mdast-util-directive
+
+[github-mdast-util-from-markdown]: https://github.com/syntax-tree/mdast-util-from-markdown
+
+[github-micromark]: https://github.com/micromark/micromark
+
+[github-micromark-extending-markdown]: https://github.com/micromark/micromark#extending-markdown
+
+[github-micromark-extension-directive]: https://github.com/micromark/micromark-extension-directive
+
+[github-rehype]: https://github.com/rehypejs/rehype
+
+[github-remark]: https://github.com/remarkjs/remark
+
+[github-remark-stringify-quote]: https://github.com/remarkjs/remark/tree/main/packages/remark-stringify#options
+
+[github-unified]: https://github.com/unifiedjs/unified
+
+[health]: https://github.com/remarkjs/.github
+
+[health-coc]: https://github.com/remarkjs/.github/blob/main/code-of-conduct.md
+
+[health-contributing]: https://github.com/remarkjs/.github/blob/main/contributing.md
+
+[health-support]: https://github.com/remarkjs/.github/blob/main/support.md
+
+[npmjs-install]: https://docs.npmjs.com/cli/install
+
+[typescript]: https://www.typescriptlang.org
+
+[unifiedjs-create-remark-plugin]: https://unifiedjs.com/learn/guide/create-a-remark-plugin/
+
+[wikipedia-xss]: https://en.wikipedia.org/wiki/Cross-site_scripting
+
+[wooorm]: https://wooorm.com
